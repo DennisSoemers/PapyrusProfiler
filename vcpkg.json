@@ -1,0 +1,37 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "paper-plugin",
+  "version-string": "1.0.0",
+  "port-version": 0,
+  "description": "A profiler for Skyrim's Papyrus scripting language.",
+  "license": "Apache-2.0",
+  "features": {
+    "scripts": {
+      "description": "Install Papyrus sources for this program to develop on top of it."
+    },
+    "scripts-dev": {
+      "description": "Install Papyrus sources necessary to develop scripts for this plugin.",
+      "dependencies": [
+        "bethesda-skyrim-scripts",
+        {
+          "name": "skse",
+          "default-features": false,
+          "features": [
+            "scripts"
+          ]
+        }
+      ]
+    },
+    "plugin": {
+      "description": "Build the SKSE plugin.",
+      "dependencies": [
+        "articuno",
+        "commonlibsse-ng"
+      ]
+    }
+  },
+  "default-features": [
+    "scripts-dev",
+    "plugin"
+  ]
+}

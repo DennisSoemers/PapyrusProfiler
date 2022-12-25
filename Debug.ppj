@@ -1,0 +1,17 @@
+<?xml version='1.0'?>
+<PapyrusProject xmlns="PapyrusProject.xsd"
+    Flags="TESV_Papyrus_Flags.flg"
+    Game="sse"
+    Output="contrib/Distribution/PapyrusDebug"
+    Optimize="false"
+    Release="false"
+    Anonymize="true"
+    Final="false">
+    <Imports>
+        <Import>.\build\debug-msvc\vcpkg_installed\x64-windows-skse\contrib\papyrus\skse</Import>
+        <Import>.\build\debug-msvc\vcpkg_installed\x64-windows-skse\contrib\papyrus\skyrim</Import>
+    </Imports>
+    <Folders>
+        <Folder>.\contrib\Distribution\PapyrusSources</Folder>
+    </Folders>
+</PapyrusProject>

@@ -1,0 +1,10 @@
+---
+AccessModifierOffset: -4
+BasedOnStyle: Google
+ColumnLimit: 120
+IndentWidth: '4'
+NamespaceIndentation: All
+TabWidth: '4'
+UseTab: Never
+
+...

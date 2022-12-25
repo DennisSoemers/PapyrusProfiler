@@ -1,0 +1,189 @@
+{
+    "version": 2,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_CXX_FLAGS": "$env{COMMONLIBSSE_COMPILER} $env{COMMONLIBSSE_PLATFORM} $env{COMMONLIBSSE_TEXT}"
+            }
+        },
+        {
+            "name": "vcpkg",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-windows-skse",
+                "VCPKG_HOST_TRIPLET": "x64-windows-skse",
+                "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake",
+                "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+            }
+        },
+        {
+            "name": "win32",
+            "hidden": true,
+            "environment": {
+                "COMMONLIBSSE_PLATFORM": "-DWIN32_LEAN_AND_MEAN -DNOMINMAX"
+            }
+        },
+        {
+            "name": "win32-unicode",
+            "hidden": true,
+            "inherits": "win32",
+            "environment": {
+                "COMMONLIBSSE_TEXT": "-DUNICODE -D_UNICODE"
+            }
+        },
+        {
+            "name": "x64",
+            "hidden": true,
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            }
+        },
+        {
+            "name": "msvc",
+            "hidden": true,
+            "environment": {
+                "COMMONLIBSSE_COMPILER": "/permissive- /Zc:preprocessor /EHsc $penv{CXXFLAGS}"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "windows-msvc-x64",
+                    "enableMicrosoftCodeAnalysis": true,
+                    "enableClangTidyCodeAnalysis": true
+                }
+            }
+        },
+        {
+            "name": "clang-cl",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang-cl",
+                "CMAKE_CXX_COMPILER": "clang-cl"
+            },
+            "environment": {
+                "COMMONLIBSSE_COMPILER": "/permissive- /EHsc -Wno-overloaded-virtual -Wno-delete-non-abstract-non-virtual-dtor -D__cpp_lib_char8_t -D__cpp_consteval -D__cpp_lib_format $penv{CXXFLAGS}"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "windows-clang-x64",
+                    "enableMicrosoftCodeAnalysis": true,
+                    "enableClangTidyCodeAnalysis": true
+                }
+            }
+        },
+        {
+            "name": "build-debug-msvc",
+            "inherits": [
+                "base",
+                "vcpkg",
+                "win32-unicode",
+                "x64",
+                "msvc"
+            ],
+            "displayName": "Debug",
+            "description": "Debug build for testing.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug-msvc",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                }
+            }
+        },
+        {
+            "name": "build-release-msvc",
+            "inherits": [
+                "base",
+                "vcpkg",
+                "win32-unicode",
+                "x64",
+                "msvc"
+            ],
+            "displayName": "Release",
+            "description": "Optimized release build.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release-msvc",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
+        },
+        {
+            "name": "build-debug-clang-cl",
+            "inherits": [
+                "base",
+                "vcpkg",
+                "win32-unicode",
+                "x64",
+                "clang-cl"
+            ],
+            "displayName": "Debug",
+            "description": "Debug build for testing.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug-clang",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                }
+            }
+        },
+        {
+            "name": "build-release-clang-cl",
+            "inherits": [
+                "base",
+                "vcpkg",
+                "win32-unicode",
+                "x64",
+                "clang-cl"
+            ],
+            "displayName": "Release",
+            "description": "Optimized release build.",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release-clang",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "release-msvc",
+            "displayName": "Release (MSVC)",
+            "configurePreset": "build-release-msvc",
+            "description": "Optimized release build."
+        },
+        {
+            "name": "debug-msvc",
+            "displayName": "Debug (MSVC)",
+            "configurePreset": "build-debug-msvc",
+            "description": "Debug build for testing."
+        },
+        {
+            "name": "release-clang-cl",
+            "displayName": "Release (Clang)",
+            "configurePreset": "build-release-clang-cl",
+            "description": "Optimized release build."
+        },
+        {
+            "name": "debug-clang-cl",
+            "displayName": "Debug (Clang)",
+            "configurePreset": "build-debug-clang-cl",
+            "description": "Debug build for testing."
+        }
+    ]
+}
