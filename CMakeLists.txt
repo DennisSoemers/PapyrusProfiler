@@ -5,7 +5,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 ## Define project
 ########################################################################################################################
 project(
-        Papyrus Profiler
+        PapyrusProfiler
         VERSION 1.0.0
         DESCRIPTION "A profiler for Skyrim's Papyrus scripting language."
         LANGUAGES CXX)
@@ -26,6 +26,7 @@ configure_file(
         @ONLY)
 
 set(sources
+        src/ProfilingHook.cpp
         src/Main.cpp
 
         ${CMAKE_CURRENT_BINARY_DIR}/version.rc)

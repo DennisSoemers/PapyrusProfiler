@@ -1,7 +1,5 @@
 #include <stddef.h>
-#include "OnMeleeHit.h"
-#include "PrecisionAPI.h"
-#include "Settings.h"
+#include "ProfilingHook.h"
 
 using namespace SKSE;
 using namespace SKSE::log;
@@ -46,37 +44,9 @@ namespace {
     void InitializeHooks() {
         log::trace("Initializing hooks...");
 
-        OnMeleeHit::OnMeleeHitHook::InstallHook();
+        Profiling::ProfilingHook::InstallHook();
 
         log::trace("Hooks initialized.");
-    }
-
-    void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
-        switch (a_msg->type) {
-            case SKSE::MessagingInterface::kPostPostLoad: {
-                const auto precisionAPI =
-                    reinterpret_cast<PRECISION_API::IVPrecision4*>(PRECISION_API::RequestPluginAPI());
-                if (precisionAPI) {
-                    precisionAPI->AddWeaponWeaponCollisionCallback(SKSE::GetPluginHandle(), OnMeleeHit::PrecisionWeaponsCallback);
-                    logger::info("Enabled compatibility with Precision");
-                }
-            }
-                break;
-            case SKSE::MessagingInterface::kDataLoaded: {
-                auto parryingHandle = GetModuleHandleA("Parrying.dll");
-                if (parryingHandle) {
-                    logger::error("Warning! ParryingRPG has detected that Parrying.dll is also loaded!");
-                    RE::DebugMessageBox("Warning! ParryingRPG has detected that Parrying.dll is also loaded!");
-                }
-
-                auto maxsuWeaponParryHandle = GetModuleHandleA("MaxsuWeaponParry.dll");
-                if (maxsuWeaponParryHandle) {
-                    logger::error("Warning! ParryingRPG has detected that MaxsuWeaponParry.dll is also loaded!");
-                    RE::DebugMessageBox("Warning! ParryingRPG has detected that MaxsuWeaponParry.dll is also loaded!");
-                }
-            }
-                break;
-        }
     }
 }  // namespace
 
@@ -91,27 +61,7 @@ SKSEPluginLoad(const LoadInterface* skse) {
     log::info("{} {} is loading...", plugin->GetName(), version);
 
     Init(skse);
-
-    const auto runtimeVersion = skse->RuntimeVersion();
-
-    if (runtimeVersion < REL::Version{1, 5, 97, 0}) {
-        logger::error("Parrying RPG is not compatible with runtime versions below 1.5.97!");
-        return false;
-    }
-
-    if (runtimeVersion > REL::Version{1, 6, 353, 0}) {
-        logger::error("Parrying RPG is not compatible with runtime versions above 1.6.353!");
-        return false;
-    }
-
-    try {
-        Settings::GetSingleton()->Load();
-    } catch (...) {
-        logger::error("Exception caught when loading settings! Default settings will be used");
-    }
-
     InitializeHooks();
-    SKSE::GetMessagingInterface()->RegisterListener(MessageHandler);
 
     log::info("{} has finished loading.", plugin->GetName());
     return true;
