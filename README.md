@@ -10,6 +10,30 @@ A profiler for Skyrim's Papyrus scripting language.
 
 The plugin can be downloaded from TODO [its NexusMods page]().
 
+## Usage
+
+### Collecting Performance Data
+
+TODO
+
+### Generating the Flame Graph
+
+The above process will have written its output to `<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log`, where 
+`<SKSE_LOGS_DIR>` is the directory where SKSE and most SKSE plugins write their logs. Typically, this is
+`<USER>/Documents/My Games/Skyrim Special Edition/SKSE`.
+
+To turn this output into a Flame Graph, we'll use the [FlameGraph repository](https://github.com/brendangregg/FlameGraph).
+After cloning that and opening a command prompt in its root directory, we can run the following command to generate
+a Flame Graph:
+
+```
+perl ./flamegraph.pl "<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log" > 
+"SKSE_LOGS_DIR>/PapyrusProfiler/FlameGraph.svg" --width 1800
+```
+
+This will write the `FlameGraph.svg` file right next to the output log, which we can then open and inspect
+in any internet browser.
+
 ## Runtime Requirements (for users)
 
 At runtime, the plugin has the following requirements. Any user of this plugin (or mods that in turn require this plugin) need to have this installed locally.
@@ -33,6 +57,7 @@ and I refer to that repository for highly detailed instructions on installation 
 ## Credits
 
 Thanks to:
+- Nightfallstorm for the hook and example code taken from [Skyrim Recursion FPS Fix](https://github.com/Nightfallstorm/Skyrim-Recursion-FPS-Fix).
 - CharmedBaryon for [CommonLibSSE NG](https://github.com/CharmedBaryon/CommonLibSSE-NG) and the [CommonLibSSE NG Sample Plugin](https://gitlab.com/colorglass/commonlibsse-sample-plugin).
 - The SKSE authors for [SKSE](http://skse.silverlock.org/).
 - Meh321 for [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444).
