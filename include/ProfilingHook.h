@@ -26,6 +26,9 @@ namespace Profiling {
                                            std::uint64_t* a_funcCallQuery);
 
     static inline REL::Relocation<decltype(FuncCallHook)> _original_func;
+    static std::unique_ptr<spdlog::logger> outputLogger;
+    static uint64_t numStacksPrinted = 0;
+    static const uint64_t stacksPrintCap = 10'000;
 
 #pragma warning(pop)
 }  // namespace Profiling
