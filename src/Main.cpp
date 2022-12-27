@@ -55,7 +55,17 @@ namespace {
  */
 SKSEPluginLoad(const LoadInterface* skse) {
     InitializeLogging();
+// just define this in the CXX flags if you want it to wait for a debugger to attach before the game loads
+#ifdef _DEBUG_WAIT_FOR_ATTACH
+    log::info("Waiting for debugger to attach...");
+    while (!IsDebuggerPresent())
+    {
+        Sleep(10);
+    }
 
+    Sleep(1000 * 4);
+    logger::info("Debugger attached!");
+#endif
     auto* plugin = PluginDeclaration::GetSingleton();
     auto version = plugin->GetVersion();
     log::info("{} {} is loading...", plugin->GetName(), version);

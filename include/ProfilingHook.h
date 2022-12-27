@@ -22,8 +22,10 @@ namespace Profiling {
         ProfilingHook& operator=(ProfilingHook&&) = delete;
     };
 
-    static RE::BSFixedString* FuncCallHook(std::uint64_t unk0, RE::BSScript::Stack* a_stack,
-                                           std::uint64_t* a_funcCallQuery);
+    static RE::BSFixedString* FuncCallHook(
+        RE::BSScript::Internal::VirtualMachine* _this,
+        RE::BSScript::Stack* a_stack,
+        RE::BSTSmartPointer<RE::BSScript::Internal::IFuncCallQuery>& a_funcCallQuery);
 
     static inline REL::Relocation<decltype(FuncCallHook)> _original_func;
     static std::unique_ptr<spdlog::logger> outputLogger;
