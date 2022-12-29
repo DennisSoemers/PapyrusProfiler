@@ -13,11 +13,11 @@ void ProfilingHook::InstallHook() {
     auto& trampoline = SKSE::GetTrampoline();
     SKSE::AllocTrampoline(14);
 
-// Hooks into BSScript::Internal::VirtualMachine::AttemptFunctionCall
-// AttemptFunctionCall is called from from BSScript::Internal::VirtualMachine::ProcessMessageQueue
-// 1.5.97: sub_141261CB0
-// 1.6.640: sub_141388580
-// hooks at offset 0x7F (1.6.640 addr: 0x1413885FF)
+    // Hooks into BSScript::Internal::VirtualMachine::AttemptFunctionCall
+    // AttemptFunctionCall is called from from BSScript::Internal::VirtualMachine::ProcessMessageQueue
+    // 1.5.97: sub_141261CB0
+    // 1.6.640: sub_141388580
+    // hooks at offset 0x7F (1.6.640 addr: 0x1413885FF)
     REL::Relocation<std::uintptr_t> target{RELOCATION_ID(98130, 104853), REL::VariantOffset(0x7F, 0x7F, 0x7F)};
     _original_func = trampoline.write_call<5>(target.address(), FuncCallHook);
 

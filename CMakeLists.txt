@@ -26,6 +26,7 @@ configure_file(
         @ONLY)
 
 set(sources
+        src/ProfilingConfig.cpp
         src/ProfilingHook.cpp
         src/Main.cpp
 
@@ -47,6 +48,9 @@ message("Options:")
 find_package(CommonLibSSE CONFIG REQUIRED)
 find_package(ryml CONFIG REQUIRED)
 find_path(ARTICUNO_INCLUDE_DIRS "articuno/articuno.h")
+find_path(RAPIDXML_INCLUDE_DIRS "rapidxml/rapidxml.hpp")
+find_package(yaml-cpp CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${sources})
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
@@ -64,7 +68,10 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
-        ryml::ryml)
+        ryml::ryml
+        nlohmann_json::nlohmann_json
+        ${RAPIDXML_INCLUDE_DIRS}
+        yaml-cpp)
 
 target_precompile_headers(${PROJECT_NAME}
         PRIVATE
