@@ -1,8 +1,5 @@
 #include "ProfilingConfig.h"
 #include "tojson.hpp"
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
 
 Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
     Profiling::ProfilingConfig config;
@@ -29,7 +26,7 @@ Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
             i.close();
 
             // Put data from the file in our config object
-            // TODO
+            Profiling::ProfilingConfig::PopulateConfig(config, data);
         } else {
             std::string errorMessage = std::format("Failed to parse {}\nBad file stream", filename);
             logger::error("{}", errorMessage);
@@ -40,4 +37,10 @@ Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
     }
 
 	return config;
+}
+
+void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& config, const json& jsonData) {
+    config.outFilepath = jsonData["OutFilepath"];
+    config.maxFilepathSuffix = jsonData["MaxFilepathSuffix"];
+    config.maxNumCalls = jsonData["MaxNumCalls"];
 }

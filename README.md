@@ -27,8 +27,7 @@ After cloning that and opening a command prompt in its root directory, we can ru
 a Flame Graph:
 
 ```
-perl ./flamegraph.pl "<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log" > 
-"SKSE_LOGS_DIR>/PapyrusProfiler/FlameGraph.svg" --width 1800
+perl ./flamegraph.pl "<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log" > "SKSE_LOGS_DIR>/PapyrusProfiler/FlameGraph.svg" --width 1800
 ```
 
 This will write the `FlameGraph.svg` file right next to the output log, which we can then open and inspect

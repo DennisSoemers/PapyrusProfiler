@@ -99,6 +99,8 @@
 #include <SKSE/SKSE.h>
 #include <REL/Relocation.h>
 
+#include <SimpleIni.h>
+
 #include <ShlObj_core.h>
 #include <Windows.h>
 #include <Psapi.h>

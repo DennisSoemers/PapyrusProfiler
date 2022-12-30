@@ -36,5 +36,8 @@
   "default-features": [
     "scripts-dev",
     "plugin"
+  ],
+  "dependencies": [
+    "simpleini"
   ]
 }
