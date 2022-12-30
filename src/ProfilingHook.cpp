@@ -38,7 +38,7 @@ static RE::BSFixedString* Profiling::FuncCallHook(
         RE::BSScript::Stack* a_stack,
         RE::BSTSmartPointer<RE::BSScript::Internal::IFuncCallQuery>& a_funcCallQuery) {
 
-    if (numStacksPrinted < stacksPrintCap && a_stack) {
+    if (numStacksPrinted < stacksPrintCap && a_stack && a_funcCallQuery) {
         // Get info from the call
         RE::BSScript::Internal::IFuncCallQuery::CallType callType;
         RE::BSTSmartPointer<RE::BSScript::ObjectTypeInfo> scriptInfo;
