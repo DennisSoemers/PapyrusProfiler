@@ -26,6 +26,7 @@ configure_file(
         @ONLY)
 
 set(sources
+        src/Settings.cpp
         src/ProfilingConfig.cpp
         src/ProfilingHook.cpp
         src/Main.cpp
@@ -51,6 +52,7 @@ find_path(ARTICUNO_INCLUDE_DIRS "articuno/articuno.h")
 find_path(RAPIDXML_INCLUDE_DIRS "rapidxml/rapidxml.hpp")
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_path(SIMPLEINI_INCLUDE_DIRS "ConvertUTF.c")
 
 add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${sources})
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
@@ -60,7 +62,8 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
         $<INSTALL_INTERFACE:src>
-        ${ARTICUNO_INCLUDE_DIRS})
+        ${ARTICUNO_INCLUDE_DIRS}
+        ${SIMPLEINI_INCLUDE_DIRS})
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC
