@@ -2,5 +2,7 @@
 	"Description": "This configuration performs profiling for a fixed number of calls. It collects data on the first 20K calls, and then stops."
 	"OutFilepath": "FixedCalls_20K_Profile",
 	"MaxFilepathSuffix": "3",
-	"MaxNumCalls": 20000
+	"MaxNumCalls": 20000,
+	"MaxNumSeconds": 0,
+	"WriteMode": 0
 }

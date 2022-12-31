@@ -1,6 +1,7 @@
 #pragma once
 
 #include <RE/Skyrim.h>
+#include "ProfilingConfig.h"
 
 namespace Profiling {
 #pragma warning(push)
@@ -20,6 +21,9 @@ namespace Profiling {
 
         ProfilingHook& operator=(const ProfilingHook&) = delete;
         ProfilingHook& operator=(ProfilingHook&&) = delete;
+
+        /** Configs which are currently actively running. */
+        std::unordered_map<std::string, ProfilingConfig> activeConfigs;
     };
 
     static RE::BSFixedString* FuncCallHook(
