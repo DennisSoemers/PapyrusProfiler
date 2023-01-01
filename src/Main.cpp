@@ -49,6 +49,23 @@ namespace {
 
         log::trace("Hooks initialized.");
     }
+
+    void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
+        switch (a_msg->type) { 
+            // Whenever we load a game (or start a new game), we want to start up the profiling config
+            // as specified in the .ini file
+            case SKSE::MessagingInterface::kNewGame:
+            case SKSE::MessagingInterface::kPreLoadGame:
+                const std::string& startupConfig = Settings::GetSingleton()->papyrusProfilerSettings.startupConfig;
+                if (startupConfig.empty()) {
+                    logger::info("Not starting any profiling config, .ini setting is empty.");
+                } else {
+                    logger::info("Starting up profiling config: {}", startupConfig);
+                    Profiling::ProfilingHook::GetSingleton().RunConfig(startupConfig);
+                }
+                break;
+        }
+    }
 }  // namespace
 
 /**
@@ -80,6 +97,7 @@ SKSEPluginLoad(const LoadInterface* skse) {
     }
 
     InitializeHooks();
+    SKSE::GetMessagingInterface()->RegisterListener(MessageHandler);
 
     log::info("{} has finished loading.", plugin->GetName());
     return true;

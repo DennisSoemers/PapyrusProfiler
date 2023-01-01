@@ -1,9 +1,8 @@
 #include "ProfilingConfig.h"
 #include "tojson.hpp"
 
-Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
-    Profiling::ProfilingConfig config;
-    config.failedLoadFromFile = true;
+Profiling::ProfilingConfig::ProfilingConfig(const std::string& configPath) {
+    failedLoadFromFile = true;
 
     // Thanks to doodlum for most of the JSON/YAML parsing code (taken from: https://github.com/doodlum/skyrim-srd)
     auto path = std::filesystem::path(configPath).filename();
@@ -27,7 +26,7 @@ Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
             i.close();
 
             // Put data from the file in our config object
-            Profiling::ProfilingConfig::PopulateConfig(config, data, configPath);
+            Profiling::ProfilingConfig::PopulateConfig(*this, data, configPath);
         } else {
             std::string errorMessage = std::format("Failed to parse {}\nBad file stream", filename);
             logger::error("{}", errorMessage);
@@ -36,8 +35,6 @@ Profiling::ProfilingConfig ProfilingConfig(const std::string& configPath) {
         std::string errorMessage = std::format("Failed to parse {}\n{}", filename, exc.what());
         logger::error("{}", errorMessage);
     }
-
-	return config;
 }
 
 void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& config, const json& jsonData, const std::string& configPath) {

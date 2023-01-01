@@ -13,6 +13,8 @@ namespace Profiling {
 
         static void InstallHook();
 
+        void RunConfig(const std::string& configFile);
+
     private:
         ProfilingHook() = default;
         ProfilingHook(const ProfilingHook&) = delete;
@@ -22,8 +24,8 @@ namespace Profiling {
         ProfilingHook& operator=(const ProfilingHook&) = delete;
         ProfilingHook& operator=(ProfilingHook&&) = delete;
 
-        /** Configs which are currently actively running. */
-        std::unordered_map<std::string, ProfilingConfig> activeConfigs;
+        /** Currently active config. */
+        std::unique_ptr<ProfilingConfig> activeConfig;
     };
 
     static RE::BSFixedString* FuncCallHook(

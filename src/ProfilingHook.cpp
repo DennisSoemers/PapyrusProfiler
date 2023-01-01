@@ -73,3 +73,18 @@ static RE::BSFixedString* Profiling::FuncCallHook(
     // Let the engine run its normal code
     return _original_func(_this, a_stack, a_funcCallQuery);
 }
+
+void ProfilingHook::RunConfig(const std::string& configFile) { 
+    if (activeConfig.get()) {
+        // TODO first stop the already-active config, have it finish any writing it should do
+        activeConfig.reset();
+    }
+
+    logger::info("Loading config: {}", configFile);
+    activeConfig = std::make_unique<ProfilingConfig>(configFile);
+
+    if (activeConfig->failedLoadFromFile) {
+        logger::error("Not running config because it failed to load: {}", configFile);
+        activeConfig.reset();
+    }
+}
