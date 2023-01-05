@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
-  "name": "paper-plugin",
+  "name": "papyrus-profiler-plugin",
   "version-string": "1.0.0",
   "port-version": 0,
   "description": "A profiler for Skyrim's Papyrus scripting language.",

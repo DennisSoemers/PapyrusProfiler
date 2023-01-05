@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "ProfilingConfig.h"
 #include "tojson.hpp"
 
@@ -10,6 +11,11 @@ Profiling::ProfilingConfig::ProfilingConfig(const std::string& configPath) {
 
 	try {
         std::ifstream i(configPath);
+        if (!i.good()) {
+            // Try if the specified path is just a name in Data/SKSE/Plugins
+            i = std::ifstream(R"(Data\SKSE\Plugins\)" + configPath);
+        }
+
         if (i.good()) {
             json data;
             if (path.extension() == ".yaml"sv) {
