@@ -43,31 +43,46 @@ Profiling::ProfilingConfig::ProfilingConfig(const std::string& configPath) {
     }
 }
 
-void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& config, const json& jsonData, const std::string& configPath) {
+void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& config, const json& jsonData,
+                                                const std::string& configPath) {
     config.configKey = configPath;
     bool detectedFailure = false;
 
-    for (const std::string& filter : jsonData["IncludeFilters"]) {
-        config.includeFilters.push_back(filter);
+    if (jsonData.contains("IncludeFilters")) {
+        for (const std::string& filter : jsonData["IncludeFilters"]) {
+            config.includeFilters.push_back(filter);
+        }
     }
 
-    for (const std::string& filter : jsonData["ExcludeFilters"]) {
-        config.excludeFilters.push_back(filter);
+    if (jsonData.contains("ExcludeFilters")) {
+        for (const std::string& filter : jsonData["ExcludeFilters"]) {
+            config.excludeFilters.push_back(filter);
+        }
     }
 
-    config.outFilepath = jsonData["OutFilepath"];
-    config.maxFilepathSuffix = jsonData["MaxFilepathSuffix"];
+    if (jsonData.contains("OutFilepath")) {
+        config.outFilepath = jsonData["OutFilepath"];
+    }
+    if (jsonData.contains("MaxFilepathSuffix")) {
+        config.maxFilepathSuffix = jsonData["MaxFilepathSuffix"];
+    }
 
-    config.maxNumCalls = jsonData["MaxNumCalls"];
-    config.maxNumSeconds = jsonData["MaxNumSeconds"];
+    if (jsonData.contains("MaxNumCalls")) {
+        config.maxNumCalls = jsonData["MaxNumCalls"];
+    }
+    if (jsonData.contains("MaxNumSeconds")) {
+        config.maxNumSeconds = jsonData["MaxNumSeconds"];
+    }
 
-    uint32_t writeMode = jsonData["WriteMode"];
-    if (writeMode < static_cast<uint32_t>(ProfilingConfig::ProfileWriteMode::Invalid)) {
-        config.writeMode = static_cast<ProfilingConfig::ProfileWriteMode>(writeMode);
-    } else {
-        detectedFailure = true;
-        config.writeMode = ProfilingConfig::ProfileWriteMode::Invalid;
-        logger::error("Invalid write mode: {}", writeMode);
+    if (jsonData.contains("WriteMode")) {
+        uint32_t writeMode = jsonData["WriteMode"];
+        if (writeMode < static_cast<uint32_t>(ProfilingConfig::ProfileWriteMode::Invalid)) {
+            config.writeMode = static_cast<ProfilingConfig::ProfileWriteMode>(writeMode);
+        } else {
+            detectedFailure = true;
+            config.writeMode = ProfilingConfig::ProfileWriteMode::Invalid;
+            logger::error("Invalid write mode: {}", writeMode);
+        }
     }
 
     config.failedLoadFromFile = detectedFailure;
