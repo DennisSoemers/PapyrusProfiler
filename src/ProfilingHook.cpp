@@ -31,7 +31,8 @@ static RE::BSFixedString* Profiling::FuncCallHook(
     if (a_stack && a_funcCallQuery) {
         ProfilingHook& profilingHook = ProfilingHook::GetSingleton();
 
-        if (profilingHook.ShouldCollectCall()) {
+        ProfilingHook::ProfilerCallResponse callResponse = profilingHook.GetNextCallResponse();
+        if (callResponse == ProfilingHook::ProfilerCallResponse::Record) {
             // Get info from the call
             RE::BSScript::Internal::IFuncCallQuery::CallType callType;
             RE::BSTSmartPointer<RE::BSScript::ObjectTypeInfo> scriptInfo;
@@ -64,7 +65,20 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                 }
             }
         } else if (profilingHook.activeConfig.get()) {
-            ++profilingHook.numSkippedCalls;
+            if (callResponse == ProfilingHook::ProfilerCallResponse::Skip) {
+                ++profilingHook.numSkippedCalls;
+            } else if (callResponse == ProfilingHook::ProfilerCallResponse::LimitExceeded) {
+                // Stop profiling
+                // TODO write if we want to write at end
+
+                if (profilingHook.outputLogger) {
+                    spdlog::drop(profilingHook.activeConfig->outFilename);
+                    profilingHook.outputLogger.reset();
+                }
+
+                profilingHook.activeConfig.reset();
+            }
+            
         }
     }
 
@@ -140,15 +154,15 @@ void ProfilingHook::ResetData() {
     numSkippedCalls = 0;
 }
 
-bool ProfilingHook::ShouldCollectCall() {
+ProfilingHook::ProfilerCallResponse ProfilingHook::GetNextCallResponse() {
     Profiling::ProfilingConfig* const config = activeConfig.get();
     if (!config) {
-        return false;
+        return ProfilerCallResponse::Skip;
     }
 
     if (config->maxNumCalls > 0 && numFuncCallsCollected >= config->maxNumCalls) {
-        return false;
+        return ProfilerCallResponse::LimitExceeded;
     }
 
-    return true;
+    return ProfilerCallResponse::Record;
 }

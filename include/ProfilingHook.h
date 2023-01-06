@@ -13,14 +13,25 @@ namespace Profiling {
 
         static void InstallHook();
 
+        /**
+         * Ways we can respond to calls.
+         */
+        enum class ProfilerCallResponse : std::uint32_t {
+            Skip = 0,           // Skip it because we didn't start profiling yet
+            Record = 1,         // Record this call
+            LimitExceeded = 2,  // Don't do anything with this call because some limit has already been exceeded
+
+            Invalid = 3
+        };
+
         /** Start running a new config */
         void RunConfig(const std::string& configFile);
 
         /** Resets all internal data (e.g., counts of collected/skipped function calls, ...) */
         void ResetData();
 
-        /** Do we want to collect the next call, based on currently active config (if any)? */
-        bool ShouldCollectCall();
+        /** What do we want to do with our next call? */
+        ProfilerCallResponse GetNextCallResponse();
 
         /** Currently active config. */
         std::unique_ptr<ProfilingConfig> activeConfig;
