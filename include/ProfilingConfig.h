@@ -38,10 +38,10 @@ namespace Profiling {
         std::string configKey = "";
 
         /** 
-         * Filepath we want to write our output to (without file extension). 
+         * Filename we want to write our output to (without file extension). 
          * A suffix and file extension will be added to this. 
          */
-        std::string outFilepath = "";
+        std::string outFilename = "";
 
         /** Max suffix we'll add to filepath to avoid overwriting previous outputs (start counting at 0). */
         uint32_t maxFilepathSuffix = 0;

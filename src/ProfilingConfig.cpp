@@ -60,9 +60,9 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
         }
     }
 
-    if (jsonData.contains("OutFilepath")) {
-        config.outFilepath = jsonData["OutFilepath"];
-    }
+    if (jsonData.contains("OutFilename")) {
+        config.outFilename = jsonData["OutFilename"];
+    } 
     if (jsonData.contains("MaxFilepathSuffix")) {
         config.maxFilepathSuffix = jsonData["MaxFilepathSuffix"];
     }
@@ -76,11 +76,16 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
 
     if (jsonData.contains("WriteMode")) {
         uint32_t writeMode = jsonData["WriteMode"];
-        if (writeMode < static_cast<uint32_t>(ProfilingConfig::ProfileWriteMode::Invalid)) {
-            config.writeMode = static_cast<ProfilingConfig::ProfileWriteMode>(writeMode);
+        if (writeMode < static_cast<uint32_t>(ProfileWriteMode::Invalid)) {
+            config.writeMode = static_cast<ProfileWriteMode>(writeMode);
+
+            if (config.outFilename.empty() && (config.writeMode == ProfileWriteMode::WriteAtEnd || config.writeMode == ProfileWriteMode::WriteLive)) {
+                detectedFailure = true;
+                logger::error("The config has WriteMode {}, but no specified OutFilepath", writeMode);
+            }
         } else {
             detectedFailure = true;
-            config.writeMode = ProfilingConfig::ProfileWriteMode::Invalid;
+            config.writeMode = ProfileWriteMode::Invalid;
             logger::error("Invalid write mode: {}", writeMode);
         }
     }
