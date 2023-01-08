@@ -1,0 +1,9 @@
+{
+	"Description": "This configuration performs profiling for a fixed number of calls. It skips the first 30K calls, and then collects data on the next 50K calls, and then stops.",
+	"OutFilename": "FixedCalls_Skip30K_Profile50K_Profile",
+	"MaxFilepathSuffix": 3,
+	"NumSkipCalls": 30000,
+	"MaxNumCalls": 50000,
+	"MaxNumSeconds": 0,
+	"WriteMode": 0
+}
