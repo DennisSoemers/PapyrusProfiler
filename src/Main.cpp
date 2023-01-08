@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include "Papyrus.h"
 #include "ProfilingHook.h"
 #include "Settings.h"
 
@@ -50,6 +51,18 @@ namespace {
         log::trace("Hooks initialized.");
     }
 
+    /**
+     * Register new Papyrus functions.
+     */
+    void InitializePapyrus() {
+        log::trace("Initializing Papyrus bindings...");
+        if (GetPapyrusInterface()->Register(Profiling::Papyrus::Bind)) {
+            log::debug("Papyrus functions bound.");
+        } else {
+            stl::report_and_fail("Failure to register Papyrus bindings.");
+        }
+    }
+
     void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
         switch (a_msg->type) { 
             // Whenever we load a game (or start a new game), we want to start up the profiling config
@@ -97,6 +110,7 @@ SKSEPluginLoad(const LoadInterface* skse) {
     }
 
     InitializeHooks();
+    InitializePapyrus();
     SKSE::GetMessagingInterface()->RegisterListener(MessageHandler);
 
     log::info("{} has finished loading.", plugin->GetName());
