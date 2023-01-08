@@ -52,6 +52,9 @@ namespace Profiling {
         /** Maximum number of seconds for which we'll profile. Zero is treated as no limit. */
         uint32_t maxNumSeconds = 0;
 
+        /** Number of calls we want to skip before we actually start recording calls. */
+        uint32_t numSkipCalls = 0;
+
         /** How/when do we want to write data to files? */
         ProfileWriteMode writeMode = ProfileWriteMode::WriteAtEnd;
 

@@ -74,6 +74,10 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
         config.maxNumSeconds = jsonData["MaxNumSeconds"];
     }
 
+    if (jsonData.contains("NumSkipCalls")) {
+        config.numSkipCalls = jsonData["NumSkipCalls"];
+    }
+
     if (jsonData.contains("WriteMode")) {
         uint32_t writeMode = jsonData["WriteMode"];
         if (writeMode < static_cast<uint32_t>(ProfileWriteMode::Invalid)) {
