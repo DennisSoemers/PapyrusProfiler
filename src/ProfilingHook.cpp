@@ -112,8 +112,15 @@ static RE::BSFixedString* Profiling::FuncCallHook(
 void ProfilingHook::RunConfig(const std::string& configFile) {
     StopCurrentConfig();
 
-    logger::info("Loading config: {}", configFile);
-    auto config = std::make_shared<ProfilingConfig>(configFile);
+    std::shared_ptr<ProfilingConfig> config;
+
+    if (configFile.empty()) {
+        logger::info("Starting default config.");
+        config = std::make_shared<ProfilingConfig>();
+    } else {
+        logger::info("Loading config: {}", configFile);
+        config = std::make_shared<ProfilingConfig>(configFile);
+    }
 
     if (config->failedLoadFromFile) {
         logger::error("Not running config because it failed to load: {}", configFile);

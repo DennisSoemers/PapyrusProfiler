@@ -73,7 +73,7 @@ namespace {
                 if (startupConfig.empty()) {
                     logger::info("Not starting any profiling config, .ini setting is empty.");
                 } else {
-                    logger::info("Starting up profiling config: {}", startupConfig);
+                    logger::info("Starting up profiling config from .ini: {}", startupConfig);
                     Profiling::ProfilingHook::GetSingleton().RunConfig(startupConfig);
                 }
                 break;

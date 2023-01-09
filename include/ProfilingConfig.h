@@ -22,7 +22,7 @@ namespace Profiling {
             Invalid = 3
         };
 
-        ProfilingConfig() = default;
+        ProfilingConfig();
         ProfilingConfig(const std::string& configPath);
 
         /** If not empty, stacktraces must match at least one of these filters (regex) to be included in collected data. */
@@ -30,12 +30,6 @@ namespace Profiling {
 
         /** Any stacktraces that match any of these filters (regex) are excluded from collected data. */
         std::vector<std::string> excludeFilters;
-
-        /** 
-         * Key identifying this config. Can only have one config active at any time per key. 
-         * Will use filename / filepath as key when loading configs from files.
-         */
-        std::string configKey = "";
 
         /** 
          * Filename we want to write our output to (without file extension). 

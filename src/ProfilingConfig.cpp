@@ -2,6 +2,10 @@
 #include "ProfilingConfig.h"
 #include "tojson.hpp"
 
+// Default config which we use if console command with no args is used to start profiling
+Profiling::ProfilingConfig::ProfilingConfig() 
+    : outFilename("PapyrusProfilerOutput"), maxFilepathSuffix(3), writeMode(ProfileWriteMode::WriteAtEnd) {}
+
 Profiling::ProfilingConfig::ProfilingConfig(const std::string& configPath) {
     failedLoadFromFile = true;
 
@@ -45,7 +49,6 @@ Profiling::ProfilingConfig::ProfilingConfig(const std::string& configPath) {
 
 void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& config, const json& jsonData,
                                                 const std::string& configPath) {
-    config.configKey = configPath;
     bool detectedFailure = false;
 
     if (jsonData.contains("IncludeFilters")) {

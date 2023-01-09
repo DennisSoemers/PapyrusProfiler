@@ -7,7 +7,7 @@ namespace Profiling {
         constexpr std::string_view PapyrusProfilerFunctions = "PapyrusProfilerFunctions";
 
         void StartProfiling(RE::StaticFunctionTag*, std::string config) {
-            // TODO
+            ProfilingHook::GetSingleton().RunConfig(config);
         }
 
         void StopProfiling(RE::StaticFunctionTag*) { 
