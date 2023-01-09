@@ -38,6 +38,8 @@ namespace Profiling {
         std::unordered_map<std::string, uint32_t> stackCallCounts;
         /** Currently active config. */
         std::shared_ptr<ProfilingConfig> activeConfig;
+        /** Mutex for synchronized access to the call counts map. */
+        std::mutex callCountsMapMutex;
         /** Number of function calls we've already collected for current config. */
         uint64_t numFuncCallsCollected = 0;
         /** Number of function calls we deliberately skipped. */

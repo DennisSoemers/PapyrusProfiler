@@ -28,8 +28,6 @@ static RE::BSFixedString* Profiling::FuncCallHook(
         RE::BSScript::Stack* a_stack,
         RE::BSTSmartPointer<RE::BSScript::Internal::IFuncCallQuery>& a_funcCallQuery) {
 
-    static std::mutex callCountsMapMutex;
-
     if (a_stack && a_funcCallQuery) {
         try {
             // Get info from the call
@@ -71,7 +69,7 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                         profilingHook.outputLogger->info(std::format("{} {}", stackTraceStr, 1));
                     } else if (profilingHook.activeConfig->writeMode != ProfilingConfig::ProfileWriteMode::WriteLive) {
                         {
-                            std::lock_guard<std::mutex> lockGuard(callCountsMapMutex);
+                            std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
                             profilingHook.stackCallCounts[stackTraceStr] =
                                 profilingHook.stackCallCounts[stackTraceStr] + 1;
                         }
@@ -84,7 +82,7 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                                 ProfilingConfig::ProfileWriteMode::WriteAtEnd) {
                                 // We'll now write everything we've collected.
                                 {
-                                    std::lock_guard<std::mutex> lockGuard(callCountsMapMutex);
+                                    std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
                                     for (const auto& [stackTraceStr, callCount] : profilingHook.stackCallCounts) {
                                         profilingHook.outputLogger->info(
                                             std::format("{} {}", stackTraceStr, callCount));
@@ -114,10 +112,11 @@ static RE::BSFixedString* Profiling::FuncCallHook(
 void ProfilingHook::RunConfig(const std::string& configFile) {
     if (activeConfig.get()) {
         // First stop already-active config
+        hitLimits = true;   // Set this to true so we stop interacting with hooked calls for now.
         if (outputLogger) {
             // Let already-active config finish any writing if it wants to
             if (activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteAtEnd) {
-                // We'll now write everything we've collected.      TODO this is not thread-safe yet
+                // We'll now write everything we've collected.
                 for (const auto& [stackTraceStr, callCount] : stackCallCounts) {
                     outputLogger->info(std::format("{} {}", stackTraceStr, callCount));
                 }
