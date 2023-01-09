@@ -56,7 +56,6 @@ static RE::BSFixedString* Profiling::FuncCallHook(
 
                     RE::BSScript::StackFrame* stackFrame = a_stack->top;
                     if (stackFrame) {
-                        stackFrame = stackFrame->previousFrame;  // Already got info for top, so start with previous
                         while (stackFrame) {
                             if (stackFrame->owningFunction && stackFrame->owningFunction.get()) {
                                 const auto scriptName = stackFrame->owningFunction.get()->GetObjectTypeName().c_str();
