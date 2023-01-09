@@ -110,26 +110,7 @@ static RE::BSFixedString* Profiling::FuncCallHook(
 }
 
 void ProfilingHook::RunConfig(const std::string& configFile) {
-    if (activeConfig.get()) {
-        // First stop already-active config
-        hitLimits = true;   // Set this to true so we stop interacting with hooked calls for now.
-        if (outputLogger) {
-            // Let already-active config finish any writing if it wants to
-            if (activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteAtEnd) {
-                // We'll now write everything we've collected.
-                for (const auto& [stackTraceStr, callCount] : stackCallCounts) {
-                    outputLogger->info(std::format("{} {}", stackTraceStr, callCount));
-                }
-            }
-
-            spdlog::drop(activeConfig->outFilename);
-            outputLogger.reset();
-        }
-
-        activeConfig.reset();
-    }
-
-    ResetData();
+    StopCurrentConfig();
 
     logger::info("Loading config: {}", configFile);
     auto config = std::make_shared<ProfilingConfig>(configFile);
@@ -184,6 +165,36 @@ void ProfilingHook::RunConfig(const std::string& configFile) {
         // initialised/processed first.
         activeConfig = config;
     }
+}
+
+void ProfilingHook::StopCurrentConfig() {
+    if (activeConfig.get()) {
+        // First stop already-active config
+        hitLimits = true;  // Set this to true so we stop interacting with hooked calls for now.
+        if (outputLogger) {
+            // Let already-active config finish any writing if it wants to
+            if (activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteAtEnd) {
+                // We'll now write everything we've collected.
+                {
+                    std::lock_guard<std::mutex> lockGuard(callCountsMapMutex);
+
+                    for (const auto& [stackTraceStr, callCount] : stackCallCounts) {
+                        outputLogger->info(std::format("{} {}", stackTraceStr, callCount));
+                    }
+
+                    stackCallCounts.clear();
+                }
+            }
+
+            spdlog::drop(activeConfig->outFilename);
+            outputLogger.reset();
+        }
+
+        activeConfig.reset();
+        RE::DebugMessageBox("Papyrus Profiling is now finished.");
+    }
+
+    ResetData();
 }
 
 void ProfilingHook::ResetData() { 

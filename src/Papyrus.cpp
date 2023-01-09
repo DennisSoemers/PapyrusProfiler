@@ -1,4 +1,5 @@
 #include "Papyrus.h"
+#include "ProfilingHook.h"
 
 namespace Profiling {
 
@@ -9,16 +10,16 @@ namespace Profiling {
             // TODO
         }
 
-        void StopProfiling(RE::StaticFunctionTag*) {
-            // TODO
+        void StopProfiling(RE::StaticFunctionTag*) { 
+            ProfilingHook::GetSingleton().StopCurrentConfig();
         }
 
         /**
          * Provide bindings for all our Papyrus functions.
          */
         bool Bind(RE::BSScript::IVirtualMachine* vm) {
-            vm->RegisterFunction("StartProfiling", PapyrusProfilerFunctions, StartProfiling, true);
-            vm->RegisterFunction("StopProfiling", PapyrusProfilerFunctions, StopProfiling, true);
+            vm->RegisterFunction("StartProfiling", PapyrusProfilerFunctions, StartProfiling, false);
+            vm->RegisterFunction("StopProfiling", PapyrusProfilerFunctions, StopProfiling, false);
 
             return true;
         }

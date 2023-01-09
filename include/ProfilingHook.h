@@ -27,6 +27,8 @@ namespace Profiling {
 
         /** Start running a new config */
         void RunConfig(const std::string& configFile);
+        /** Stops the currently-running config (if any) */
+        void StopCurrentConfig();
 
         /** Resets all internal data (e.g., counts of collected/skipped function calls, ...) */
         void ResetData();

@@ -12,13 +12,13 @@ Event OnInit()
 EndEvent
 
 Event OnStartProfiling()
-	OnStartProfilingConfig("")
+	PapyrusProfilerFunctions.StartProfiling("")
 EndEvent
 
-Event OnStartProfilingConfig(string config)
-	; TODO
+Event OnStartProfilingConfig(String config)
+	PapyrusProfilerFunctions.StartProfiling(config)
 EndEvent
 
 Event OnStopProfiling()
-	; TODO
+	PapyrusProfilerFunctions.StopProfiling()
 EndEvent
