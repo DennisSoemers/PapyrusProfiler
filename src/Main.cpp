@@ -69,6 +69,10 @@ namespace {
             // as specified in the .ini file
             case SKSE::MessagingInterface::kNewGame:
             case SKSE::MessagingInterface::kPreLoadGame:
+                // In case we already have some profiling running, stop that first
+                Profiling::ProfilingHook::GetSingleton().StopCurrentConfig();
+
+                // Start up any config that may be specified as startup-config in .ini
                 const std::string& startupConfig = Settings::GetSingleton()->papyrusProfilerSettings.startupConfig;
                 if (startupConfig.empty()) {
                     logger::info("Not starting any profiling config, .ini setting is empty.");
