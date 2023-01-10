@@ -80,6 +80,9 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
     if (jsonData.contains("NumSkipCalls")) {
         config.numSkipCalls = jsonData["NumSkipCalls"];
     }
+    if (jsonData.contains("NumSkipSeconds")) {
+        config.numSkipSeconds = jsonData["NumSkipSeconds"];
+    }
 
     if (jsonData.contains("WriteMode")) {
         uint32_t writeMode = jsonData["WriteMode"];

@@ -42,6 +42,8 @@ namespace Profiling {
         std::shared_ptr<ProfilingConfig> activeConfig;
         /** Mutex for synchronized access to the call counts map. */
         std::mutex callCountsMapMutex;
+        /** When did our currently-active config start running? */
+        std::chrono::steady_clock::time_point activeConfigStartTime;
         /** Number of function calls we've already collected for current config. */
         uint64_t numFuncCallsCollected = 0;
         /** Number of function calls we deliberately skipped. */

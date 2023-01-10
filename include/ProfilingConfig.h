@@ -49,6 +49,9 @@ namespace Profiling {
         /** Number of calls we want to skip before we actually start recording calls. */
         uint32_t numSkipCalls = 0;
 
+        /** Number of seconds to skip before we actually start recording calls. */
+        uint32_t numSkipSeconds = 0;
+
         /** How/when do we want to write data to files? */
         ProfileWriteMode writeMode = ProfileWriteMode::WriteAtEnd;
 

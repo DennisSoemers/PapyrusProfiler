@@ -187,6 +187,8 @@ void ProfilingHook::RunConfig(const std::string& configFile) {
     }
 
     if (config) {
+        activeConfigStartTime = std::chrono::steady_clock::now();
+
         // Do this assignment at the end for thread-safety, want everything fully
         // initialised/processed first.
         activeConfig = config;
@@ -254,9 +256,31 @@ ProfilingHook::ProfilerCallResponse ProfilingHook::GetNextCallResponse() {
             return ProfilerCallResponse::Skip;
         }
 
+        if (config->numSkipSeconds > 0) {
+            const auto currentTime = std::chrono::steady_clock::now();
+            const auto elapsedTime =
+                std::chrono::duration_cast<std::chrono::seconds>(currentTime - activeConfigStartTime).count();
+
+            if (elapsedTime < config->numSkipSeconds) {
+                ++numSkippedCalls;
+                return ProfilerCallResponse::Skip;
+            }
+        }
+
         if (config->maxNumCalls > 0 && numFuncCallsCollected >= config->maxNumCalls) {
             hitLimits = true;
             return ProfilerCallResponse::LimitHit;
+        }
+
+        if (config->maxNumSeconds > 0) {
+            const auto currentTime = std::chrono::steady_clock::now();
+            const auto elapsedTime =
+                std::chrono::duration_cast<std::chrono::seconds>(currentTime - activeConfigStartTime).count();
+
+            if (elapsedTime >= config->maxNumSeconds) {
+                hitLimits = true;
+                return ProfilerCallResponse::LimitHit;
+            }
         }
 
         ++numFuncCallsCollected;

@@ -1,0 +1,8 @@
+{
+	"Description": "This configuration skips the first 30 seconds, and then profiles for 5 minutes (300sec + 30sec to account for skipping).",
+	"OutFilename": "Skip30sec_Profile5mins_Profile",
+	"MaxFilepathSuffix": 3,
+	"MaxNumSeconds": 330,
+	"NumSkipSeconds": 30,
+	"WriteMode": 0
+}
