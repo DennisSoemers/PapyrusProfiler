@@ -26,10 +26,10 @@ namespace Profiling {
         ProfilingConfig(const std::string& configPath);
 
         /** If not empty, stacktraces must match at least one of these filters (regex) to be included in collected data. */
-        std::vector<std::string> includeFilters;
+        std::vector<std::regex> includeFilters;
 
         /** Any stacktraces that match any of these filters (regex) are excluded from collected data. */
-        std::vector<std::string> excludeFilters;
+        std::vector<std::regex> excludeFilters;
 
         /** 
          * Filename we want to write our output to (without file extension). 

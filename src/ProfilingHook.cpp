@@ -64,14 +64,33 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                         }
                     }
 
-                    if (profilingHook.outputLogger &&
-                        profilingHook.activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteLive) {
-                        profilingHook.outputLogger->info(std::format("{} {}", stackTraceStr, 1));
-                    } else if (profilingHook.activeConfig->writeMode != ProfilingConfig::ProfileWriteMode::WriteLive) {
-                        {
-                            std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
-                            profilingHook.stackCallCounts[stackTraceStr] =
-                                profilingHook.stackCallCounts[stackTraceStr] + 1;
+                    bool matchesFilters = true;
+                    for (const std::regex& filter : profilingHook.activeConfig->includeFilters) {
+                        if (!std::regex_match(stackTraceStr, filter)) {
+                            matchesFilters = false;
+                            break;
+                        }
+                    }
+                    if (matchesFilters) {
+                        for (const std::regex& filter : profilingHook.activeConfig->excludeFilters) {
+                            if (std::regex_match(stackTraceStr, filter)) {
+                                matchesFilters = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (matchesFilters) {
+                        if (profilingHook.outputLogger &&
+                            profilingHook.activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteLive) {
+                            profilingHook.outputLogger->info(std::format("{} {}", stackTraceStr, 1));
+                        } else if (profilingHook.activeConfig->writeMode !=
+                                   ProfilingConfig::ProfileWriteMode::WriteLive) {
+                            {
+                                std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
+                                profilingHook.stackCallCounts[stackTraceStr] =
+                                    profilingHook.stackCallCounts[stackTraceStr] + 1;
+                            }
                         }
                     }
                 } else if (profilingHook.activeConfig) {

@@ -1,0 +1,11 @@
+{
+	"Description": "This configuration collects all OnHit events. No stopping condition: should be stopped manually.",
+	"OutFilename": "OnHit",
+	"MaxFilepathSuffix": 3,
+	"MaxNumCalls": 0,
+	"MaxNumSeconds": 0,
+	"WriteMode": 0,
+	"IncludeFilters": [
+		"^.*\\.[Oo][Nn][Hh][Ii][Tt].*$"
+	]
+}

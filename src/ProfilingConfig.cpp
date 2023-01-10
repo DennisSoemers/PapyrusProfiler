@@ -53,13 +53,13 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
 
     if (jsonData.contains("IncludeFilters")) {
         for (const std::string& filter : jsonData["IncludeFilters"]) {
-            config.includeFilters.push_back(filter);
+            config.includeFilters.emplace_back(filter);
         }
     }
 
     if (jsonData.contains("ExcludeFilters")) {
         for (const std::string& filter : jsonData["ExcludeFilters"]) {
-            config.excludeFilters.push_back(filter);
+            config.excludeFilters.emplace_back(filter);
         }
     }
 
