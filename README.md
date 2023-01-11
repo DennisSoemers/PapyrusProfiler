@@ -10,7 +10,7 @@ A profiler for Skyrim's [Papyrus](https://www.creationkit.com/index.php?title=Ca
 
 With the plugin in this repository, we can collect information about the function calls that are running in Skyrim's scripting language (Papyrus) at runtime, and convert this into nice plots that help us analyse which scripts (and which functions in them) are being called a lot. For example, I obtain the following graph after running around outside and inside Whiterun for 5 minutes (with a large list of installed mods).
 
-[![Example](https://dennissoemers.github.io/assets/papyrus_profiler/FlameGraph_5mins_Whiterun.svg)](https://dennissoemers.github.io/assets/papyrus_profiler/FlameGraph_5mins_Whiterun.svg)
+[![Example image of a generated flamegraph.](https://dennissoemers.github.io/assets/papyrus_profiler/FlameGraph_5mins_Whiterun.svg)](https://dennissoemers.github.io/assets/papyrus_profiler/FlameGraph_5mins_Whiterun.svg)
 
 If you open this graph in a new browser tab, you will also be able to mouse over individual elements of the graph to get information about them, or click them to zoom in on certain stacks.
 
@@ -46,17 +46,31 @@ In the in-game console (by default opened using the ~ key), Papyrus profiling ca
 nl_cmd StartPapyrusProfiling()
 ```
 
+![Screenshot of in-game console window with the command to start profiling entered.](/screenshots/StartPapyrusProfiling.jpg)
+
 After entering this command, the profiler will start collecting data on all Papyrus function calls. Note that it will not write any of this data to a file until you manually stop the profiling. So, if you quit your game (or it crashes) without having stopped the profiler, no profiling data will be retained. Papyrus profiling can be stopped with the following console command:
 
 ```
 nl_cmd StopPapyrusProfiling()
 ```
 
+![Screenshot of in-game console window with the command to stop profiling entered.](/screenshots/StopPapyrusProfiling.jpg)
+
 After entering this command, the profiler will write all the data it has collected to `<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput_<i>.log`. `<SKSE_LOGS_DIR>` is the directory where SKSE and most SKSE plugins write their logs. Typically, this is `<USER>/Documents/My Games/Skyrim Special Edition/SKSE`. The `<i>` is simply an index, which can be 0, 1, 2, or 3. It will use 0 for the first time a file is written, 1 for the second, etc. If all four possible files already exist, it will overwrite whichever file has not been edited for the longest amount of time (meaning that it will typically just keep cycling from 0 to 3 and back to 0).
+
+It is also possible to modify the behaviour of the profiler, by using a different console command to start the profiling:
+
+```
+nl_cmd StartPapyrusProfilingConfig(<filename>)
+```
+
+In this command, `<filename>` is expected to be the name of a `.json` or `.yaml` file which specifies the *configuration* you wish to use for profiling. How such files work is explained in more detail [below](#13-configuration-files). Depending on the exact configuration you use, it may not even be necessary anymore to manually stop the profiling (though you always can).
 
 ### 1.2 Ini File
 
 ### 1.3 Configuration Files
+
+### 1.4 Starting and Stopping Profiling from Papyrus Scripts
 
 ## 2. Generating the Flame Graph
 
