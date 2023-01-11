@@ -47,6 +47,10 @@ perl ./flamegraph.pl "<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log"
 This will write the `FlameGraph.svg` file right next to the output log, which we can then open and inspect
 in any internet browser.
 
+## Limitations
+
+TODO
+
 ## Runtime Requirements (for users)
 
 At runtime, the plugin has the following requirements. Any user of this plugin (or mods that in turn require this plugin) need to have this installed locally.
