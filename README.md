@@ -20,7 +20,13 @@ The plugin can be downloaded from TODO [its NexusMods page]().
 
 ## Usage
 
-### Collecting Performance Data
+Using the profiler consists of two separate steps:
+
+1. [Collecting function call data](#collecting-function-call-data) at runtime: we'll have to play Skyrim with the plugin installed such that the plugin can collect data and write it to a text file. We can specify when to start and or stop collecting data during our playing session in a few different ways, which are explained below.
+
+2. [Generating the Flame Graph](#generating-the-flame-graph): after the plugin has written the data we need to a text file, we can use [a separate tool](https://github.com/brendangregg/FlameGraph) to turn it into a nice, interactive plot.
+
+### Collecting Function Call Data
 
 TODO
 
