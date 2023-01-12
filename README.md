@@ -82,7 +82,31 @@ With these default contents, the profiler does not run any configuration on game
 
 ### 1.3 Configuration Files
 
+A *configuration* file is a JSON file that describes some settings that the profiler should use. Several example files are included in the Papyrus Profiler download (and also available [in this GitHub repo](/contrib/Distribution/ProfilingConfigs)). For example, the contents of the `Skip30sec_Profile5min.json` config are as follows:
 
+```json
+{
+	"Description": "This configuration skips the first 30 seconds, and then profiles for 5 minutes (300sec + 30sec to account for skipping).",
+	"OutFilename": "Skip30sec_Profile5mins_Profile",
+	"MaxFilepathSuffix": 3,
+	"MaxNumSeconds": 330,
+	"NumSkipSeconds": 30,
+	"WriteMode": 0
+}
+```
+
+If this example configuration is used (either by specifying it via the `nl_cmd StartPapyrusProfilingConfig(Skip30sec_Profile5min.json)` console command, or by specifying it as a startup configuration in the INI file), the profiler will behave as follows. For the first 30 seconds, it will do nothing. Over the next 5 minutes (300 seconds), it will collect data on all the Papyrus function calls. After this, it will write all the data it has collected to `<SKSE_LOGS_DIR>/PapyrusProfiler/Skip30sec_Profile5mins_Profile_<i>.log`, where `<i>` cycles through 0, 1, 2, 3, and back to 0. Once that is done, it will do nothing else for the remainder of your playing session (except if you manually re-start profiling again).
+
+The following properties can be used in config files:
+- `"OutFilename"`: here you should provide the filename (without extension) which you would like the profiler to write its output to when using this configuration.
+- `"MaxFilepathSuffix"`: here you can specify an integer, which provides a bound on the number of different output files can be written for the same configuration before the profiler will start overwriting old files. For example, if you use `3`, the profiler can write to up to four different files (0, 1, 2, and 3) before it starts overwriting the oldest file.
+- `"MaxNumCalls"`: if you specify a number greater than `0`, the Papyrus Profiler will automatically stop running once it has collected data on this many function calls.
+- `"MaxNumSeconds"`: if you specify a number greater than `0`, the Papyrus Profiler will automatically stop running once it has been running for this many seconds.
+- `"NumSkipCalls"`: if you specify a number `n` greater than `0`, the Papyrus Profiler will skip the first `n` function calls that it observes (and only start collecting data afterwards).
+- `"NumSkipSeconds"`: if you specify a number greater than `0`, the Papyrus Profiler will only start collecting data once this many seconds have elapsed since it was started with this configuration. Note that the profiler *will* include this time also in the time counted for `"MaxNumSeconds"`.
+- `"WriteMode"`: you may set this to either `0` or `1`. If you use `0` (default), the Papyrus Profiler will only write all its collected data at once when it is done. This may be either because you stopped it manually with a console command, or because it hit the `"MaxNumSeconds"` or `"MaxNumCalls"` limit. If you set `"WriteMode"` to `1`, the Papyrus Profiler will continously keep writing data immediately as it is collected. This may be considered 'more safe', in the sense that you will not lose data collected so far if the game crashes or if you quit the game without stopping profiling. However, this may lead to **substantially larger output file sizes** (because the profiler cannot compress many lines with identical stacktraces into a single output line), so **I do not recommend this for long profiling sessions**.
+- `"IncludeFilters"`: here you can provide an array of strings, each of which is interpreted as a regular expression. If this array is non-empty, only stacktraces that match at least one of these regular expressions will be tracked by the profiler. Other stacktraces will simply be ignored. For example, the `OnHit_Config.json` example configuration uses `"^.*\\.[Oo][Nn][Hh][Ii][Tt].*$"` as a regular expression to only collect data on stacktraces that include "OnHit".
+- `"ExcludeFilters"`: here you can provide an array of strings, each of which is interpreted as a regular expression. Any stacktrace that matches any regular expression provided in this array will be ignored by the profiler.
 
 ### 1.4 Starting and Stopping Profiling from Papyrus Scripts
 
