@@ -97,7 +97,7 @@ A *configuration* file is a JSON file that describes some settings that the prof
 
 If this example configuration is used (either by specifying it via the `nl_cmd StartPapyrusProfilingConfig(Skip30sec_Profile5min.json)` console command, or by specifying it as a startup configuration in the INI file), the profiler will behave as follows. For the first 30 seconds, it will do nothing. Over the next 5 minutes (300 seconds), it will collect data on all the Papyrus function calls. After this, it will write all the data it has collected to `<SKSE_LOGS_DIR>/PapyrusProfiler/Skip30sec_Profile5mins_Profile_<i>.log`, where `<i>` cycles through 0, 1, 2, 3, and back to 0. Once that is done, it will do nothing else for the remainder of your playing session (except if you manually re-start profiling again).
 
-The following properties can be used in config files:
+**The following properties can be used in config files**:
 - `"OutFilename"`: here you should provide the filename (without extension) which you would like the profiler to write its output to when using this configuration.
 - `"MaxFilepathSuffix"`: here you can specify an integer, which provides a bound on the number of different output files can be written for the same configuration before the profiler will start overwriting old files. For example, if you use `3`, the profiler can write to up to four different files (0, 1, 2, and 3) before it starts overwriting the oldest file.
 - `"MaxNumCalls"`: if you specify a number greater than `0`, the Papyrus Profiler will automatically stop running once it has collected data on this many function calls.
@@ -143,10 +143,6 @@ perl ./flamegraph.pl "<SKSE_LOGS_DIR>/PapyrusProfiler/OnHit_0.log" > "SKSE_LOGS_
 
 ---
 
-## Limitations
-
-TODO
-
 ## Runtime Requirements (for users)
 
 At runtime, the plugin has the following requirements. Any user of this plugin (or mods that in turn require this plugin) need to have this installed locally.
@@ -166,6 +162,20 @@ Building the code in this repository has the following requirements.
 
 This project was set up exactly as in the [CommonLibSSE NG Sample Plugin](https://gitlab.com/colorglass/commonlibsse-sample-plugin), 
 and I refer to that repository for highly detailed instructions on installation and building.
+
+## Limitations
+
+Currently, the Papyrus Profiler only counts Papyrus function calls. This is very likely useful, and likely provides useful information that can guide us and help us better identify which scripts (and which functions in them) are **likely** to be taking substantial time/resources in our game. But it is important to keep in mind that it does not tell the whole story, there are some limitations.
+
+### Limitation 1: Not Measuring Time
+
+We are just counting how often every function gets called, not how much time it takes to complete running. This is not necessarily better or worse, it is just different information. In Papyrus, function calls are notoriously expensive, so there is probably some useful correlation. Function calls are also often (depending on which functions they are) points at which scripts "pause" to sync to framerate or wait for resources currently locked by other threads, which again suggests that counting functions may be a useful way to estimate the "stress" that a script places on the game's scripting engine. 
+
+In other words, the profiler can currently show you which functions/stacktraces get called frequently, and which don't, but it doesn't tell us exactly how much time they take. If a function gets called very frequently, that suggests that it may be worthwhile to pay extra attention to that function and, for example, see whether it may be possible to optimise the code inside of it... but if we were to succeed at this and find ways to optimise it, this would likely have been very useful, but we would not notice any difference if we ran the profiler again because we were just counting calls instead of measuring time!
+
+### Limitation 2: Function Calls Only
+
+Papyrus scripts do not only consist of function calls. They also include numerous operations, such as addition, subtraction, multiplication, assigning values to variables, equality/inequality tests, if-statements, casting operations, ... and so on. Function calls are often more expensive than these other operations, but if we have a lot of them, they can still add up. Especially if we're not using [Papyrus Tweaks](https://www.nexusmods.com/skyrimspecialedition/mods/77779) to increase the maximum number of operations per task. However, the Papyrus Profiler is currently completely oblivious to any of these operation: it's only counting function calls.
 
 ## Credits
 
