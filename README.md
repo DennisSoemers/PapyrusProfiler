@@ -34,7 +34,7 @@ Using the profiler consists of two separate steps:
 There are two main ways in which you can make the plugin collect function call data from gameplay:
 
 1. By running console commands to start and stop profiling.
-2. By specifying a configuration file (which describes how and when you want profiling to happen) in the plugin's `.ini` file, which will then be used as soon as you launch your game.
+2. By specifying a configuration file (which describes how and when you want profiling to happen) in the plugin's INI file, which will then be used as soon as you launch your game.
 
 ### 1.1 Console Commands
 
@@ -66,9 +66,23 @@ nl_cmd StartPapyrusProfilingConfig(<filename>)
 
 In this command, `<filename>` is expected to be the name of a `.json` or `.yaml` file which specifies the *configuration* you wish to use for profiling. How such files work is explained in more detail [below](#13-configuration-files). Depending on the exact configuration you use, it may not even be necessary anymore to manually stop the profiling (though you always can).
 
-### 1.2 Ini File
+### 1.2 INI File
+
+The download of Papyrus Profiler includes a `/SKSE/Plguins/PapyrusProfiler.ini` file, right alongside the plugin's `.dll` file. By default, the contents of this INI file are as follows:
+
+```INI
+[PapyrusProfilerSettings]
+
+;Filename (or filepath) for Profiling Config to use on startup. Leave empty to not run any config on game load.
+StartupConfig = 
+
+```
+
+With these default contents, the profiler does not run any configuration on game startup. However, you may edit this file by providing a filename or filepath for a file that specifies a configuration, and then the profiler will start using this configuration immediately when you load a game (or start a new game). If you only specify a filename (for example: `StartupConfig = Skip30sec_Profile5min.json`), the profiler will look for a configuration with this name in the `/SKSE/Plugins/` directory (where `PapyrusProfiler.dll` and `PapyrusProfiler.ini` are also located). If you specify a full filepath, it could be anywhere on your computer. More details on exactly how configuration files work are provided next.
 
 ### 1.3 Configuration Files
+
+
 
 ### 1.4 Starting and Stopping Profiling from Papyrus Scripts
 
