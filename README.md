@@ -110,6 +110,10 @@ The following properties can be used in config files:
 
 ### 1.4 Starting and Stopping Profiling from Papyrus Scripts
 
+While the primary two ways to specify how and when profiling should start and stop are (1) console commands and (2) the INI file setting, a third approach that can be used is to start and stop profiling using Papyrus Scripts. This means that you could, for example, create a mod with a new Spell or Power that starts or stops profiling.
+
+The Papyrus Profiler exposes two new functions to the scripting language, which may be found in the [PapyrusProfilerFunctions.psc](/contrib/Distribution/PapyrusSources/PapyrusProfilerFunctions.psc) file. If an empty string is passed into the function to start profiling, it will use exhibit the same default behaviour as when the `nl_cmd StartPapyrusProfiling()` console command without config file is used. The [PapyrusProfilerQuestScript.psc](/contrib/Distribution/PapyrusSources/PapyrusProfilerQuestScript.psc) file (which is used to implement the console commands!) may be used as an example for how to call these functions.
+
 ## 2. Generating the Flame Graph
 
 The above process will have written its output to `<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput.log`, where 
