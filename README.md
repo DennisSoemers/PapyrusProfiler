@@ -18,7 +18,7 @@ Note that, while the game already has some basic built-in support for Papyrus pr
 
 ## Download
 
-The plugin can be downloaded from TODO [its NexusMods page]().
+The plugin can be downloaded from [its NexusMods page](https://www.nexusmods.com/skyrimspecialedition/mods/82770/).
 
 ---
 
@@ -38,7 +38,7 @@ There are two main ways in which you can make the plugin collect function call d
 
 ### 1.1 Console Commands
 
-In order to be able to start and stop profiling from the in-game console, it is required to have the `PapyrusProfiler.esp` file (which can be downloaded from the [TODO PapyrusProfiler NexusMods page]()) active. This, in turn, also requires the [NL_CMD Console Command Framework](https://www.nexusmods.com/skyrimspecialedition/mods/62497) to be installed and active.
+In order to be able to start and stop profiling from the in-game console, it is required to have the `PapyrusProfiler.esp` file (which can be downloaded from the [PapyrusProfiler NexusMods page](https://www.nexusmods.com/skyrimspecialedition/mods/82770/)) active. This, in turn, also requires the [NL_CMD Console Command Framework](https://www.nexusmods.com/skyrimspecialedition/mods/62497) to be installed and active.
 
 In the in-game console (by default opened using the ~ key), Papyrus profiling can be started using the following command:
 
