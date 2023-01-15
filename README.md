@@ -66,6 +66,8 @@ nl_cmd StartPapyrusProfilingConfig(<filename>)
 
 In this command, `<filename>` is expected to be the name of a `.json` or `.yaml` file which specifies the *configuration* you wish to use for profiling. How such files work is explained in more detail [below](#13-configuration-files). Depending on the exact configuration you use, it may not even be necessary anymore to manually stop the profiling (though you always can).
 
+> **Note**: an alternative implementation that uses a different framework to implement console commands may be downloaded from: [https://www.nexusmods.com/skyrimspecialedition/mods/82793/](https://www.nexusmods.com/skyrimspecialedition/mods/82793/)
+
 ### 1.2 INI File
 
 The download of Papyrus Profiler includes a `/SKSE/Plguins/PapyrusProfiler.ini` file, right alongside the plugin's `.dll` file. By default, the contents of this INI file are as follows:
