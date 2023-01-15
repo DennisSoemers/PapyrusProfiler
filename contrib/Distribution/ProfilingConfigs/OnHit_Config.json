@@ -6,6 +6,6 @@
 	"MaxNumSeconds": 0,
 	"WriteMode": 0,
 	"IncludeFilters": [
-		"^.*\\.[Oo][Nn][Hh][Ii][Tt].*$"
+		"^.*\\.OnHit.*$"
 	]
 }
