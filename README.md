@@ -121,6 +121,8 @@ The Papyrus Profiler exposes two new functions to the scripting language, which 
 The process described above for collecting data will have written its output to some output file. For example: `<SKSE_LOGS_DIR>/PapyrusProfiler/PapyrusProfilerOutput_0.log`, where `<SKSE_LOGS_DIR>` is the directory where SKSE and most SKSE plugins write their logs. Typically, this is
 `<USER>/Documents/My Games/Skyrim Special Edition/SKSE`.
 
+> **Note**: as a simpler alternative to the following instructions based on command lines, you may also drop your log files into [https://www.speedscope.app/](https://www.speedscope.app/) to obtain similar types of plots. For this website, I recommend switching to "Left Heavy" instead of the default "Time Order" view.
+
 To turn this output into a Flame Graph, we'll use the [FlameGraph repository](https://github.com/brendangregg/FlameGraph). This also requires you to have installed [Perl](https://www.perl.org/get.html). After cloning the FlameGraph repository and opening a command prompt in its root directory, we can run the following command to generate a Flame Graph:
 
 ```
