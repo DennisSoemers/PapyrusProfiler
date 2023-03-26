@@ -231,6 +231,7 @@ void ProfilingHook::StopCurrentConfig() {
                     }
 
                     stackCallCounts.clear();
+                    tracesPerStackID.clear();
                 }
             }
 
@@ -249,6 +250,7 @@ void ProfilingHook::ResetData() {
     numFuncCallsCollected = 0; 
     numSkippedCalls = 0;
     stackCallCounts.clear();
+    tracesPerStackID.clear();
     hitLimits = false;
     printedStartProfileMessage = false;
 }
