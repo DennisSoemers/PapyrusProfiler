@@ -2,6 +2,7 @@
 
 #include <RE/Skyrim.h>
 #include "ProfilingConfig.h"
+#include <unordered_set>
 
 namespace Profiling {
 #pragma warning(push)
@@ -38,6 +39,8 @@ namespace Profiling {
 
         /** Mapping from stacktrace strings to call counts. */
         std::unordered_map<std::string, uint32_t> stackCallCounts;
+        /** Mapping from stack IDs to traces we've already collected for that stack */
+        std::unordered_map<RE::VMStackID, std::unordered_set<std::string>> tracesPerStackID;
         /** Currently active config. */
         std::shared_ptr<ProfilingConfig> activeConfig;
         /** Mutex for synchronized access to the call counts map. */

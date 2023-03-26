@@ -83,13 +83,33 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                     if (matchesFilters) {
                         if (profilingHook.outputLogger &&
                             profilingHook.activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteLive) {
-                            profilingHook.outputLogger->info(std::format("{} {}", stackTraceStr, 1));
+
+                            { 
+                                std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex); 
+                                if (!profilingHook.tracesPerStackID.contains(a_stack->stackID)) {
+                                    profilingHook.tracesPerStackID.emplace(a_stack->stackID,
+                                                                           std::unordered_set<std::string>());
+                                }
+
+                                if (!profilingHook.tracesPerStackID[a_stack->stackID].contains(stackTraceStr)) {
+                                    profilingHook.outputLogger->info(std::format("{} {}", stackTraceStr, 1));
+                                    profilingHook.tracesPerStackID[a_stack->stackID].emplace(stackTraceStr);
+                                }
+                            }
                         } else if (profilingHook.activeConfig->writeMode !=
                                    ProfilingConfig::ProfileWriteMode::WriteLive) {
                             {
                                 std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
-                                profilingHook.stackCallCounts[stackTraceStr] =
-                                    profilingHook.stackCallCounts[stackTraceStr] + 1;
+                                if (!profilingHook.tracesPerStackID.contains(a_stack->stackID)) {
+                                    profilingHook.tracesPerStackID.emplace(a_stack->stackID,
+                                                                           std::unordered_set<std::string>());
+                                }
+
+                                if (!profilingHook.tracesPerStackID[a_stack->stackID].contains(stackTraceStr)) {
+                                    profilingHook.stackCallCounts[stackTraceStr] =
+                                        profilingHook.stackCallCounts[stackTraceStr] + 1;
+                                    profilingHook.tracesPerStackID[a_stack->stackID].emplace(stackTraceStr);
+                                }
                             }
                         }
                     }
