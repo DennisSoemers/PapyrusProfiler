@@ -1,0 +1,12 @@
+{
+	"Description": "This configuration collects all OnItemAdded/OnItemRemoved events. No stopping condition: should be stopped manually.",
+	"OutFilename": "OnItemAddedRemoved",
+	"MaxFilepathSuffix": 3,
+	"MaxNumCalls": 0,
+	"MaxNumSeconds": 0,
+	"WriteMode": 0,
+	"IncludeFilters": [
+		"^.*\\.OnItemAdded.*$",
+		"^.*\\.OnItemRemoved.*$"
+	]
+}

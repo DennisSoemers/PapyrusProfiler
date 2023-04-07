@@ -65,12 +65,18 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                     }
 
                     bool matchesFilters = true;
-                    for (const std::regex& filter : profilingHook.activeConfig->includeFilters) {
-                        if (!std::regex_match(stackTraceStr, filter)) {
-                            matchesFilters = false;
-                            break;
+
+                    if (profilingHook.activeConfig->includeFilters.size() > 0) {
+                        matchesFilters = false;
+
+                        for (const std::regex& filter : profilingHook.activeConfig->includeFilters) {
+                            if (std::regex_match(stackTraceStr, filter)) {
+                                matchesFilters = true;
+                                break;
+                            }
                         }
                     }
+                    
                     if (matchesFilters) {
                         for (const std::regex& filter : profilingHook.activeConfig->excludeFilters) {
                             if (std::regex_match(stackTraceStr, filter)) {

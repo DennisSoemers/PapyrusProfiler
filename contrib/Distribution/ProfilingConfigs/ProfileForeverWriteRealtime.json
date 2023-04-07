@@ -1,0 +1,8 @@
+{
+	"Description": "This configuration profiles for up to a million seconds, and writes in real-time.",
+	"OutFilename": "ProfileForeverWriteRealtime",
+	"MaxFilepathSuffix": 3,
+	"MaxNumSeconds": 1000000,
+	"NumSkipSeconds": 0,
+	"WriteMode": 1
+}
