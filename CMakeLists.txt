@@ -6,7 +6,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 ########################################################################################################################
 project(
         PapyrusProfiler
-        VERSION 2.0.2
+        VERSION 2.1.0
         DESCRIPTION "A profiler for Skyrim's Papyrus scripting language."
         LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
