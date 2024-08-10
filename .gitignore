@@ -532,6 +532,8 @@ FodyWeavers.xsd
 # End of https://www.toptal.com/developers/gitignore/api/clion,visualstudio,visualstudiocode,cmake
 
 build/
+buildae/
+buildvr/
 
 contrib/Distribution/**/*.dll
 contrib/Distribution/**/*.pdb

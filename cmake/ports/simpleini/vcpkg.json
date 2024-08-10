@@ -1,0 +1,7 @@
+{
+  "name": "simpleini",
+  "version-string": "4.19",
+  "port-version": 1,
+  "description": "Cross-platform C++ library providing a simple API to read and write INI-style configuration files. Fork to allow empty values",
+  "homepage": "https://github.com/powerof3/simpleini"
+}
