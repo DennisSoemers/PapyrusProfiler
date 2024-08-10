@@ -1,3 +1,4 @@
 [submodule "CommonLibVR"]
 	path = CommonLibVR
 	url = https://github.com/alandtse/CommonLibVR
+	branch = ng
