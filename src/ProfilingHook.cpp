@@ -1,6 +1,8 @@
-#include <filesystem>
-#include <SKSE/SKSE.h>
 #include "ProfilingHook.h"
+
+#include <SKSE/SKSE.h>
+
+#include <filesystem>
 
 using namespace Profiling;
 
@@ -24,10 +26,8 @@ void ProfilingHook::InstallHook() {
 }
 
 static RE::BSFixedString* Profiling::FuncCallHook(
-        RE::BSScript::Internal::VirtualMachine* _this,
-        RE::BSScript::Stack* a_stack,
-        RE::BSTSmartPointer<RE::BSScript::Internal::IFuncCallQuery>& a_funcCallQuery) {
-
+    RE::BSScript::Internal::VirtualMachine* _this, RE::BSScript::Stack* a_stack,
+    RE::BSTSmartPointer<RE::BSScript::Internal::IFuncCallQuery>& a_funcCallQuery) {
     if (a_stack && a_funcCallQuery) {
         try {
             // Get info from the call
@@ -45,7 +45,10 @@ static RE::BSFixedString* Profiling::FuncCallHook(
 
                 if (callResponse == ProfilingHook::ProfilerCallResponse::Record) {
                     if (!profilingHook.printedStartProfileMessage) {
-                        RE::DebugMessageBox("Papyrus Profiling starts now.");
+                        if (profilingHook.activeConfig->showDebugMessageBox) {
+                            RE::DebugMessageBox("Papyrus Profiling starts now.");
+                        }
+
                         profilingHook.printedStartProfileMessage = true;
                     }
 
@@ -76,7 +79,7 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                             }
                         }
                     }
-                    
+
                     if (matchesFilters) {
                         for (const std::regex& filter : profilingHook.activeConfig->excludeFilters) {
                             if (std::regex_match(stackTraceStr, filter)) {
@@ -89,9 +92,8 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                     if (matchesFilters) {
                         if (profilingHook.outputLogger &&
                             profilingHook.activeConfig->writeMode == ProfilingConfig::ProfileWriteMode::WriteLive) {
-
-                            { 
-                                std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex); 
+                            {
+                                std::lock_guard<std::mutex> lockGuard(profilingHook.callCountsMapMutex);
                                 if (!profilingHook.tracesPerStackID.contains(a_stack->stackID)) {
                                     profilingHook.tracesPerStackID.emplace(a_stack->stackID,
                                                                            std::unordered_set<std::string>());
@@ -141,7 +143,9 @@ static RE::BSFixedString* Profiling::FuncCallHook(
                         }
 
                         profilingHook.activeConfig.reset();
-                        RE::DebugMessageBox("Papyrus Profiling is now finished.");
+                        if (profilingHook.activeConfig->showDebugMessageBox) {
+                            RE::DebugMessageBox("Papyrus Profiling is now finished.");
+                        }
                     }
                 }
             }
@@ -245,15 +249,18 @@ void ProfilingHook::StopCurrentConfig() {
             outputLogger.reset();
         }
 
+        if (activeConfig->showDebugMessageBox) {
+            RE::DebugMessageBox("Papyrus Profiling is now finished.");
+        }
+
         activeConfig.reset();
-        RE::DebugMessageBox("Papyrus Profiling is now finished.");
     }
 
     ResetData();
 }
 
-void ProfilingHook::ResetData() { 
-    numFuncCallsCollected = 0; 
+void ProfilingHook::ResetData() {
+    numFuncCallsCollected = 0;
     numSkippedCalls = 0;
     stackCallCounts.clear();
     tracesPerStackID.clear();
@@ -267,7 +274,7 @@ ProfilingHook::ProfilerCallResponse ProfilingHook::GetNextCallResponse() {
         return ProfilerCallResponse::Skip;
     }
 
-    // All the following we want to synchronize, for reading/writing of 
+    // All the following we want to synchronize, for reading/writing of
     // numSkippedCalls and numFuncCallsCollected, and return appropriate
     // responses.
     static std::mutex mtx;

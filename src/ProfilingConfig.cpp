@@ -84,6 +84,10 @@ void Profiling::ProfilingConfig::PopulateConfig(Profiling::ProfilingConfig& conf
         config.numSkipSeconds = jsonData["NumSkipSeconds"];
     }
 
+    if (jsonData.contains("ShowDebugMessageBox")) {
+        config.showDebugMessageBox = jsonData["ShowDebugMessageBox"];
+    }
+
     if (jsonData.contains("WriteMode")) {
         uint32_t writeMode = jsonData["WriteMode"];
         if (writeMode < static_cast<uint32_t>(ProfileWriteMode::Invalid)) {

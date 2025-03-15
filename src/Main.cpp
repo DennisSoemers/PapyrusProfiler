@@ -1,11 +1,65 @@
 #include <stddef.h>
+
 #include "Papyrus.h"
+#include "PapyrusAPI.h"
 #include "ProfilingHook.h"
 #include "Settings.h"
+#include "version.h"
 
 using namespace SKSE;
 using namespace SKSE::log;
 using namespace SKSE::stl;
+
+/**
+ * Setup Papyrus Profiler SKSE API
+ */
+namespace PapyrusProfilerAPI {
+    // Handles skse mod messages requesting to fetch API functions from Papyrusprofiler
+    void ModMessageHandler(SKSE::MessagingInterface::Message* message);
+
+    // This object provides access to PapyrusProfiler's mod support API version 1
+    struct PapyrusProfilerInterface001 : IPapyrusProfilerInterface001 {
+        virtual unsigned int GetBuildNumber() 
+        {
+            constexpr std::size_t MAJOR = PROJECT_VER_MAJOR;
+            constexpr std::size_t MINOR = PROJECT_VER_MINOR;
+            constexpr std::size_t PATCH = PROJECT_VER_PATCH;
+
+            return (MAJOR << 8) + (MINOR << 4) + PATCH;
+        }
+
+        virtual void StartProfilingConfig(const std::string& configName) {
+            Profiling::ProfilingHook::GetSingleton().RunConfig(configName);
+        }
+
+        virtual void StopProfiling() { Profiling::ProfilingHook::GetSingleton().StopCurrentConfig(); }
+        virtual void LoadSettings() { Settings::GetSingleton()->Load(); }
+    };
+
+}  // namespace PapyrusProfilerAPI
+extern PapyrusProfilerAPI::PapyrusProfilerInterface001 g_interface001;
+
+PapyrusProfilerAPI::PapyrusProfilerInterface001 g_interface001;
+
+// Constructs and returns an API of the revision number requested
+void* GetApi(unsigned int revisionNumber) {
+    switch (revisionNumber) {
+        case 1:
+            logger::info("Interface revision 1 requested");
+            return &g_interface001;
+    }
+    return nullptr;
+}
+
+// Handles skse mod messages requesting to fetch API functions
+void ModMessageHandler(SKSE::MessagingInterface::Message* message) {
+    using namespace PapyrusProfilerAPI;
+    if (message->type == PapyrusProfilerMessage::kMessage_GetInterface) {
+        PapyrusProfilerMessage* modmappermessage = (PapyrusProfilerMessage*)message->data;
+        modmappermessage->GetApiFunction = GetApi;
+        logger::info("Provided PapyrusProfiler plugin interface to {}", message->sender);
+    }
+}
 
 namespace {
     /**
@@ -64,10 +118,17 @@ namespace {
     }
 
     void MessageHandler(SKSE::MessagingInterface::Message* a_msg) {
-        switch (a_msg->type) { 
+        switch (a_msg->type) {
             // Whenever we load a game (or start a new game), we want to start up the profiling config
             // as specified in the .ini file
             case SKSE::MessagingInterface::kNewGame:
+            case SKSE::MessagingInterface::kPostLoad:
+                if (SKSE::GetMessagingInterface()->RegisterListener(nullptr, ModMessageHandler))
+                    logger::info("Successfully registered SKSE listener {} with buildnumber {}",
+                                 PapyrusProfilerAPI::PapyrusProfilerPluginName, g_interface001.GetBuildNumber());
+                else
+                    logger::info("Unable to register SKSE listener");
+                break;
             case SKSE::MessagingInterface::kPreLoadGame:
                 // In case we already have some profiling running, stop that first
                 Profiling::ProfilingHook::GetSingleton().StopCurrentConfig();
@@ -93,7 +154,7 @@ SKSEPluginLoad(const LoadInterface* skse) {
 // just define this in the CXX flags if you want it to wait for a debugger to attach before the game loads
 #ifdef _DEBUG_WAIT_FOR_ATTACH
     log::info("Waiting for debugger to attach...");
-    while (!IsDebuggerPresent())
+    while (!IsDebuggerPresent()) 
     {
         Sleep(10);
     }

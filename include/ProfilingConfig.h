@@ -52,6 +52,9 @@ namespace Profiling {
         /** Number of seconds to skip before we actually start recording calls. */
         uint32_t numSkipSeconds = 0;
 
+        /** Show the start / stop debug message box popup. */
+        bool showDebugMessageBox = true;
+
         /** How/when do we want to write data to files? */
         ProfileWriteMode writeMode = ProfileWriteMode::WriteAtEnd;
 
